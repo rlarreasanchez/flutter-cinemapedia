@@ -69,6 +69,7 @@ class _MovieDetails extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.all(8),
           child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               ClipRRect(
                 borderRadius: BorderRadius.circular(20),
