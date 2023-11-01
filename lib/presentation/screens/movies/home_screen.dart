@@ -50,7 +50,9 @@ class _HomeViewState extends ConsumerState<_HomeView> {
       physics: const BouncingScrollPhysics(),
       slivers: [
         const SliverAppBar(
+          collapsedHeight: 70,
           floating: true,
+          expandedHeight: 70,
           flexibleSpace: FlexibleSpaceBar(
             centerTitle: true,
             title: CustomAppbar(),
