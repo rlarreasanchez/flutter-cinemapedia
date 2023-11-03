@@ -82,7 +82,7 @@ class SearchMovieDelegate extends SearchDelegate<Movie?> {
     );
   }
 
-  Widget _buildResultsAndSuggestions(BuildContext context) {
+  Widget _buildResultsAndSuggestions() {
     return StreamBuilder(
       initialData: initialMovies,
       stream: debounceMovies.stream,
@@ -91,18 +91,13 @@ class SearchMovieDelegate extends SearchDelegate<Movie?> {
 
         return ListView.builder(
           itemCount: movies.length,
-          itemBuilder: (context, index) {
-            final movie = movies[index];
-            return FadeIn(
-              child: _MovieItem(
-                movie: movie,
-                onMovieSelected: (context, movie) {
-                  clearStreams();
-                  close(context, movie);
-                },
-              ),
-            );
-          },
+          itemBuilder: (context, index) => _MovieItem(
+            movie: movies[index],
+            onMovieSelected: (context, movie) {
+              clearStreams();
+              close(context, movie);
+            },
+          ),
         );
       },
     );
@@ -110,14 +105,14 @@ class SearchMovieDelegate extends SearchDelegate<Movie?> {
 
   @override
   Widget buildResults(BuildContext context) {
-    return _buildResultsAndSuggestions(context);
+    return _buildResultsAndSuggestions();
   }
 
   @override
   Widget buildSuggestions(BuildContext context) {
     _onQueryChanged(query);
 
-    return _buildResultsAndSuggestions(context);
+    return _buildResultsAndSuggestions();
   }
 }
 
@@ -133,50 +128,58 @@ class _MovieItem extends StatelessWidget {
 
     return GestureDetector(
       onTap: () => onMovieSelected(context, movie),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-        child: Row(
-          children: [
-            //Image
-            SizedBox(
-              width: size.width * 0.2,
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(20),
-                child: Image.network(movie.posterPath),
-              ),
-            ),
-            const SizedBox(width: 10),
-            //Description
-            SizedBox(
-              width: size.width * 0.7,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    movie.title,
-                    style: textStyles.titleMedium,
+      child: FadeIn(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+          child: Row(
+            children: [
+              //Image
+              SizedBox(
+                width: size.width * 0.2,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(10),
+                  child: FadeInImage(
+                    height: 130,
+                    fit: BoxFit.cover,
+                    image: NetworkImage(movie.posterPath),
+                    placeholder:
+                        const AssetImage('assets/loaders/bottle-loader.gif'),
                   ),
-                  (movie.overview.length > 100)
-                      ? Text('${movie.overview.substring(0, 100)}...')
-                      : Text(movie.overview),
-                  Row(
-                    children: [
-                      Icon(
-                        Icons.star_half_rounded,
-                        color: Colors.yellow.shade800,
-                      ),
-                      const SizedBox(width: 5),
-                      Text(
-                        HumanFormats.number(movie.voteAverage, 1),
-                        style: textStyles.bodyMedium!
-                            .copyWith(color: Colors.yellow.shade800),
-                      )
-                    ],
-                  )
-                ],
+                ),
               ),
-            )
-          ],
+              const SizedBox(width: 10),
+              //Description
+              SizedBox(
+                width: size.width * 0.7,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      movie.title,
+                      style: textStyles.titleMedium,
+                    ),
+                    (movie.overview.length > 100)
+                        ? Text('${movie.overview.substring(0, 100)}...')
+                        : Text(movie.overview),
+                    Row(
+                      children: [
+                        Icon(
+                          Icons.star_half_rounded,
+                          color: Colors.yellow.shade800,
+                        ),
+                        const SizedBox(width: 5),
+                        Text(
+                          HumanFormats.number(movie.voteAverage, 1),
+                          style: textStyles.bodyMedium!
+                              .copyWith(color: Colors.yellow.shade800),
+                        )
+                      ],
+                    )
+                  ],
+                ),
+              )
+            ],
+          ),
         ),
       ),
     );
